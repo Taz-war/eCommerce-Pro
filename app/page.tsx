@@ -1,65 +1,171 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Sparkles, ShoppingBag, Truck, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getFeaturedProducts, getStoreCategories } from "./(store)/actions";
+import { ProductCard } from "@/components/store/product-card";
+import { Navbar } from "@/components/store/navbar";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+export default async function HomePage() {
+    const [products, categories] = await Promise.all([
+        getFeaturedProducts(8),
+        getStoreCategories(),
+    ]);
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50 to-purple-50">
+            {/* Animated background blobs */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+                <div className="absolute -bottom-40 left-1/2 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+            </div>
+
+            <Navbar />
+            <main className="container mx-auto px-4 py-8">
+                <div className="space-y-16">
+                    {/* Hero Section */}
+                    <section className="relative overflow-hidden rounded-3xl">
+                        <div className="glass-light p-8 md:p-12 lg:p-16">
+                            <div className="grid lg:grid-cols-2 gap-8 items-center">
+                                <div className="space-y-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 text-violet-700 text-sm font-medium">
+                                        <Sparkles className="h-4 w-4" />
+                                        New Collection Available
+                                    </div>
+                                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                                        Discover
+                                        <span className="gradient-text"> Premium </span>
+                                        Products
+                                    </h1>
+                                    <p className="text-lg text-gray-600 max-w-md">
+                                        Explore our curated collection of high-quality products
+                                        designed to elevate your lifestyle.
+                                    </p>
+                                    <div className="flex flex-wrap gap-4">
+                                        <Link href="/products">
+                                            <Button size="lg" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg shadow-violet-500/30 glow-hover rounded-xl gap-2">
+                                                Shop Now
+                                                <ArrowRight className="h-4 w-4" />
+                                            </Button>
+                                        </Link>
+                                        <Link href="/products">
+                                            <Button size="lg" variant="outline" className="rounded-xl border-gray-300 hover:bg-gray-50">
+                                                View Collection
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                                <div className="hidden lg:block">
+                                    <div className="relative">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-purple-400 rounded-3xl blur-3xl opacity-30" />
+                                        <div className="relative glass rounded-3xl p-8 aspect-square flex items-center justify-center">
+                                            <ShoppingBag className="h-32 w-32 text-violet-500 opacity-50" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Features */}
+                    <section className="grid sm:grid-cols-3 gap-4">
+                        {[
+                            { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
+                            { icon: Shield, title: "Secure Payment", desc: "100% protected" },
+                            { icon: Sparkles, title: "Premium Quality", desc: "Curated products" },
+                        ].map((feature, i) => (
+                            <div key={i} className="glass-card rounded-2xl p-6 text-center">
+                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white mb-4">
+                                    <feature.icon className="h-6 w-6" />
+                                </div>
+                                <h3 className="font-semibold text-gray-900">{feature.title}</h3>
+                                <p className="text-sm text-gray-500 mt-1">{feature.desc}</p>
+                            </div>
+                        ))}
+                    </section>
+
+                    {/* Categories */}
+                    {categories.length > 0 && (
+                        <section className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-2xl md:text-3xl font-bold">Shop by Category</h2>
+                                <Link href="/products" className="text-violet-600 hover:text-violet-700 font-medium text-sm flex items-center gap-1">
+                                    View All <ArrowRight className="h-4 w-4" />
+                                </Link>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {categories.slice(0, 4).map((category: { _id: string; name: string; slug: string }) => (
+                                    <Link
+                                        key={category._id}
+                                        href={`/products?category=${category.slug}`}
+                                        className="glass-card rounded-2xl p-6 text-center group"
+                                    >
+                                        <h3 className="font-semibold text-gray-900 group-hover:text-violet-600 transition-colors">
+                                            {category.name}
+                                        </h3>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Featured Products */}
+                    <section className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-2xl md:text-3xl font-bold">Featured Products</h2>
+                            <Link href="/products" className="text-violet-600 hover:text-violet-700 font-medium text-sm flex items-center gap-1">
+                                View All <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </div>
+                        {products.length > 0 ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                                {products.map((product: {
+                                    _id: string;
+                                    name: string;
+                                    price: number;
+                                    images: string[];
+                                    category?: { name: string };
+                                }) => (
+                                    <ProductCard key={product._id} product={product} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="glass-card rounded-2xl p-12 text-center">
+                                <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                                <h3 className="text-lg font-semibold text-gray-900">No products yet</h3>
+                                <p className="text-gray-500 mt-2">
+                                    Check back soon for new arrivals!
+                                </p>
+                            </div>
+                        )}
+                    </section>
+                </div>
+            </main>
+
+            {/* Footer */}
+            <footer className="border-t border-white/20 mt-16">
+                <div className="container mx-auto px-4 py-8">
+                    <div className="glass-light rounded-2xl p-6">
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <p className="text-sm text-gray-600">
+                                © 2026 eCommerce Pro. All rights reserved.
+                            </p>
+                            <div className="flex gap-6">
+                                <a href="#" className="text-sm text-gray-600 hover:text-violet-600 transition-colors">
+                                    Privacy Policy
+                                </a>
+                                <a href="#" className="text-sm text-gray-600 hover:text-violet-600 transition-colors">
+                                    Terms of Service
+                                </a>
+                                <a href="#" className="text-sm text-gray-600 hover:text-violet-600 transition-colors">
+                                    Contact
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    );
 }
+
